@@ -44,22 +44,19 @@ public class MyRoutes extends RouteBuilder {
     @Inject
     @Uri("log:output")
     private Endpoint resultEndpoint;
-    
-    @Inject
-    @ServiceName("broker-amq-tcp")
-    @Alias("jms")
-    ActiveMQComponent activeMQComponent;
 
     @Override
     public void configure() throws Exception {
         
-        from(inputEndpoint)
+        boolean autoStartupJPA_JMS = false;
+        
+		from(inputEndpoint).autoStartup(autoStartupJPA_JMS)
        .transacted("PROPAGATION_REQUIRED")
        .bean(JTAProcessor.class)
-       .to("jms:queue:TEST.ENTITY?transacted=true&transactionManager=#transactionManager")
+       //.to("jms:queue:TEST.ENTITY?transacted=true&transactionManager=#transactionManager")
        .to(resultEndpoint);
         
-        from(inputEndpointQuery)
+        from(inputEndpointQuery).autoStartup(autoStartupJPA_JMS)
        .bean(TestEntityRepository.class, "findAll")
        .bean(CountProcessor.class)
        .log("RESULT: ${body}");

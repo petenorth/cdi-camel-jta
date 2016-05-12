@@ -17,27 +17,49 @@ package org.pfry.cdijta.route;
 
 import io.fabric8.annotations.Factory;
 import io.fabric8.annotations.ServiceName;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.camel.component.ActiveMQComponent;
+import org.apache.camel.component.jms.JmsConfiguration;
 
 public class ActiveMQComponentFactory {
 
-    @Factory
-    @ServiceName
-    public ActiveMQComponent create(@ServiceName ActiveMQConnectionFactory factory) {
-        ActiveMQComponent component = new ActiveMQComponent();
-        component.setConnectionFactory(factory);
-        return component;
-    }
+//    @Factory
+//    @ServiceName
+//    @Named("jms")
+//    public ActiveMQComponent create(@ServiceName ActiveMQConnectionFactory factory) {
+//        ActiveMQComponent component = new ActiveMQComponent();
+//        component.setConnectionFactory(factory);
+//        return component;
+//    }
 
     /*
     @Factory
     @ServiceName
+    @Named("jms")
     public ActiveMQComponent create(@ServiceName String url, @Configuration ActiveMQConfig config) {
         ActiveMQComponent component = new ActiveMQComponent();
         component.setBrokerURL(url);
         component.setConnectionFactory(new ActiveMQConnectionFactory(url));
         return component;
     }*/
+	
+	@Inject
+	JmsConfiguration configuration;
 
+	@Produces
+	@Named("jmstx")
+	@ApplicationScoped
+	public ActiveMQComponent createActiveMQComponent()
+	{
+		ActiveMQComponent activeMQComponent = new ActiveMQComponent();
+		activeMQComponent.setConfiguration(configuration);
+		return activeMQComponent;
+	}
+	
 }

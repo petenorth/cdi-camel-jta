@@ -23,8 +23,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 public class ActiveMQConfigurer {
 
     @Factory
-    @ServiceName
-    public ActiveMQConnectionFactory create(@ServiceName String service, @Configuration ActiveMQConfig config) {
+    public ActiveMQConnectionFactory create( String service, @Configuration ActiveMQConfig config) {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(service);
         connectionFactory.setDispatchAsync(config.getDispatchAsync());
         connectionFactory.setAlwaysSessionAsync(config.getAlwaysSessionAsync());

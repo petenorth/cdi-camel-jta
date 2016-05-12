@@ -1,4 +1,4 @@
-package org.pfry;
+package org.pfry.cdijta.route;
 
 import javax.inject.Inject;
 import javax.naming.NamingException;
@@ -13,8 +13,8 @@ public class JTAProcessor {
 	@Inject
 	TestEntityRepository testEntityRepository;
 
-	public void doSomething() throws NamingException, NotSupportedException, SystemException{
-		testEntityRepository.save(new TestEntity("HELLO"));
+	public String doSomething() throws NamingException, NotSupportedException, SystemException{
+		return "id of new TestEntity is " + testEntityRepository.save(new TestEntity("HELLO"));
 	}
 
 }

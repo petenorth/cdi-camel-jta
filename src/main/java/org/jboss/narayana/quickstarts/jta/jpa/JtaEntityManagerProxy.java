@@ -24,7 +24,6 @@ import java.lang.reflect.Proxy;
 
 public class JtaEntityManagerProxy implements java.lang.reflect.InvocationHandler {
 
-
     private EntityManager obj;
 
     public static Object newInstance(EntityManager obj) {

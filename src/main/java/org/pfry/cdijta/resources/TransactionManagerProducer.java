@@ -1,4 +1,4 @@
-package org.pfry;
+package org.pfry.cdijta.resources;
 
 import javax.enterprise.inject.Produces;
 import javax.naming.InitialContext;

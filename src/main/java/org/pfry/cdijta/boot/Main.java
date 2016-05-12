@@ -1,4 +1,4 @@
-package org.pfry.boot;
+package org.pfry.cdijta.boot;
 
 import javax.naming.InitialContext;
 
@@ -126,7 +126,7 @@ public abstract class Main extends MainSupport { // abstract to prevent cdi
 		JNDIManager.bindJTAImplementation();
 
 		JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL("jdbc:h2:mem:test;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
+		dataSource.setURL("jdbc:h2:mem:test;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;");
 		dataSource.setUser("sa");
 		dataSource.setPassword("");
 		InitialContext context = new InitialContext();

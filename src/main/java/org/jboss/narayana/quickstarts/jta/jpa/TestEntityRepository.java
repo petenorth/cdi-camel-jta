@@ -20,6 +20,8 @@ package org.jboss.narayana.quickstarts.jta.jpa;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
+
 import java.util.List;
 
 
@@ -34,7 +36,7 @@ public class TestEntityRepository {
         return (List<TestEntity>) this.entityManager.createQuery("select te from TestEntity te").getResultList();
     }
 
-    @Transactional
+    @Transactional(TxType.MANDATORY)
     public Long save(TestEntity testEntity) {
         assert entityManager != null;
         if (testEntity.isTransient()) {

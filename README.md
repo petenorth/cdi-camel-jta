@@ -25,27 +25,27 @@ https://access.redhat.com/documentation/en/red-hat-enterprise-linux-atomic-host/
 
 My personal development environment (the host) is
 
-1) CDK running on RHEL 7.2
-2) VirtualBox 5.0.x
-3) Vagrant 1.7.4
+* CDK running on RHEL 7.2
+* VirtualBox 5.0.x
+* Vagrant 1.7.4
 
 After 
 
-vagrant up (registering the VM with my red hat support credentials)
+    vagrant up (registering the VM with my red hat support credentials)
 
 then
 
-eval "$(vagrant service-manager env docker)
+    eval "$(vagrant service-manager env docker)
 
 then
 
-oc login -u admin -p admin https://10.1.2.2:8443
-oc new-project testing
+    oc login -u admin -p admin https://10.1.2.2:8443
+    oc new-project testing
 
 I found that my CDK was missing Fuse Integration Image Streams and Templates. So I found I had to do
 
-oc create -n openshift -f https://raw.githubusercontent.com/jboss-fuse/application-templates/master/fis-image-streams.json
-oc create -f /home/pfry/projects/pd_20160508/openshift-ansible/roles/openshift_examples/files/examples/v1.1/xpaas-templates/ -n openshift
+    oc create -n openshift -f https://raw.githubusercontent.com/jboss-fuse/application-templates/master/fis-image-streams.json
+    oc create -f /home/pfry/projects/pd_20160508/openshift-ansible/roles/openshift_examples/files/examples/v1.1/xpaas-templates/ -n openshift
 
 See
 
@@ -53,7 +53,7 @@ https://docs.openshift.com/enterprise/3.1/install_config/imagestreams_templates.
 
 Now from the Openshift web console select the testing project and create a broker app from the A-MQ 6.2 basic. This gives you a broker running in a pod exposing a number of services (for the different transport protocols). On the command line type
 
-oc describe services broker-amq-tcp 
+    oc describe services broker-amq-tcp 
 
 And make a note of the Cluster IP. Go into this project and edit the broker URL which is hard coded in ActiveMQXAConnectionFactoryProducer.java . I will be updating the code shortly so that this is obtained either from an environment property or via the Fabric8 @ServiceName annotation.
 
@@ -89,7 +89,7 @@ https://github.com/jbosstm/quickstart/tree/master/jta-and-hibernate
 
 You will see that there is some JPA/JTA code present in the code and a route
 
-org.pfry.cdijta.MyRoutes 
+    org.pfry.cdijta.MyRoutes 
 
 Which uses it. The routes are disabled currently, feel free to switch the on and see how they work. I need to test the rollback behaviour with Postgres a similar database as currently the H2 database only works in AUTOCOMMIT mode.
 

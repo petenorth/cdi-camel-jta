@@ -1,9 +1,6 @@
-# CDI Camel QuickStart
+# CDI with Narayana/JTA and transacted JMS endpoints.
 
-This example shows how to work with Camel in the Java Container using CDI to configure components,
-endpoints and beans.
-
-This example is implemented using Java code with CDI injected resources such as Camel endpoints and Java beans.
+This example shows how to work with Camel in the Java Container using CDI and the Narayana transaction manager. The JMS endpoint present in the route using the a JTA aware A-MQ component and the route it's self is set to be transacted. The route has a processor after the sending of a message to the transaction client JMS endpoint which throws a runtime exception on every fifth message. This means that of the 25 messages sent only 20 should end up on the A-MQ queue.
 
 ### Building
 
@@ -13,16 +10,54 @@ The example can be built with
 
 ### Running the example locally
 
-The example can be run locally using the following Maven goal:
+Normally you would run locally using the following Maven goal but for this example this isn't possible:
 
-    mvn clean install exec:java
+    mvn clean install exec:java (WILL NOT WORK)
 
 
-### Running the example in fabric8
+### Running the example in the CDK
 
-It is assumed that OpenShift platform is already running. If not you can find details how to [Install OpenShift at your site](https://docs.openshift.com/enterprise/3.1/install_config/install/index.html).
+It is assumed you have worked through
 
-The example can be built and deployed using a single goal:
+https://access.redhat.com/documentation/en/red-hat-enterprise-linux-atomic-host/7/container-development-kit-installation-guide/container-development-kit-installation-guide
+
+https://access.redhat.com/documentation/en/red-hat-enterprise-linux-atomic-host/version-7/getting-started-with-container-development-kit/
+
+My personal development environment (the host) is
+
+1) CDK running on RHEL 7.2
+2) VirtualBox 5.0.x
+3) Vagrant 1.7.4
+
+After 
+
+vagrant up (registering the VM with my red hat support credentials)
+
+then
+
+eval "$(vagrant service-manager env docker)
+
+then
+
+oc login -u admin -p admin https://10.1.2.2:8443
+oc new-project testing
+
+I found that my CDK was missing Fuse Integration Image Streams and Templates. So I found I had to do
+
+oc create -n openshift -f https://raw.githubusercontent.com/jboss-fuse/application-templates/master/fis-image-streams.json
+oc create -f /home/pfry/projects/pd_20160508/openshift-ansible/roles/openshift_examples/files/examples/v1.1/xpaas-templates/ -n openshift
+
+See
+
+https://docs.openshift.com/enterprise/3.1/install_config/imagestreams_templates.html
+
+Now from the Openshift web console select the testing project and create a broker app from the A-MQ 6.2 basic. This gives you a broker running in a pod exposing a number of services (for the different transport protocols). On the command line type
+
+oc describe services broker-amq-tcp 
+
+And make a note of the Cluster IP. Go into this project and edit the broker URL which is hard coded in ActiveMQXAConnectionFactoryProducer.java . I will be updating the code shortly so that this is obtained either from an environment property or via the Fabric8 @ServiceName annotation.
+
+The example can now be built and deployed using a single goal:
 
     mvn -Pf8-deploy
 
@@ -39,18 +74,7 @@ Then find the name of the pod that runs this quickstart, and output the logs fro
 You can also use the OpenShift [web console](https://docs.openshift.com/enterprise/3.1/getting_started/developers/developers_console.html#tutorial-video) to manage the
 running pods, and view logs and much more.
 
-
-### Running the example using OpenShift S2I template
-
-The example can also be built and run using the included S2I template quickstart-template.json.
-
-The application can be run directly by first editing the template file and populating S2I build parameters, including the required parameter GIT_REPO and then executing the command:
-
-    oc new-app -f quickstart-template.json
-
-Alternatively the template file can be used to create an OpenShift application template by executing the command:
-
-    oc create -f quickstart-template.json
+In the logs you should see that every fifth messages fails to be processed by the route and then if you navigate to the Java console of the broker-amq pod (within the Openshift web console) the number of enqueued messages is 20 on the TEST.OUT queue.
 
 
 ### More details

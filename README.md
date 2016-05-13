@@ -1,6 +1,6 @@
 # CDI with Narayana/JTA and transacted JMS endpoints.
 
-This example shows how to work with Camel in the Java Container using CDI and the Narayana transaction manager. The JMS endpoint present in the route using the a JTA aware A-MQ component and the route it's self is set to be transacted. The route has a processor after the sending of a message to the transaction client JMS endpoint which throws a runtime exception on every fifth message. This means that of the 25 messages sent only 20 should end up on the A-MQ queue.
+This example shows how to work with Camel in the Java Container using CDI and the Narayana transaction manager. The JMS endpoint present in the route using the a JTA aware A-MQ component and the route it's self is set to be transacted. The route (org.pfry.cdijta.route.TomsRoutes) has a processor after the sending of a message to the transaction client JMS endpoint which throws a runtime exception on every fifth message. This means that of the 25 messages sent only 20 should end up on the A-MQ queue.
 
 ### Building
 
@@ -78,6 +78,20 @@ In the logs you should see that every fifth messages fails to be processed by th
 
 
 ### More details
+
+The Main class used to boot CDI is a modified version of the Fuse Integration Services boot class 
+
+org.pfry.cdijta.boot.Main
+
+It is modified using code inspired by
+
+https://github.com/jbosstm/quickstart/tree/master/jta-and-hibernate
+
+You will see that there is some JPA/JTA code present in the code and a route
+
+org.pfry.cdijta.MyRoutes 
+
+Which uses it. The routes are disabled currently, feel free to switch the on and see how they work. I need to test the rollback behaviour with Postgres a similar database as currently the H2 database only works in AUTOCOMMIT mode.
 
 You can find more details about running this [quickstart](http://fabric8.io/guide/quickstarts/running.html) on the website. This also includes instructions how to change the Docker image user and registry.
 

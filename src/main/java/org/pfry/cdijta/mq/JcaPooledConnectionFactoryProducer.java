@@ -2,12 +2,10 @@ package org.pfry.cdijta.mq;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.transaction.TransactionManager;
 
 import org.apache.activemq.ActiveMQXAConnectionFactory;
 import org.apache.activemq.pool.JcaPooledConnectionFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import javax.transaction.TransactionManager;
 
 
 public class JcaPooledConnectionFactoryProducer {
